@@ -1,6 +1,13 @@
 import React from "react";
 
-const Room = () => {
+    
+const Room = ({ username, setUsername, roomkey, setRoomkey,setOnChatScreen,socket }) => {
+    const sendRoom = (event) => {
+        //event.preventDefault();
+        //console.log("Room create clicked!");
+        socket.emit("roomkey", roomkey)
+        setOnChatScreen(true)
+    }
     return (
     <React.Fragment>
 
@@ -11,13 +18,13 @@ const Room = () => {
             <path d="M0,0V5.63C149.93,59,314.09,71.32,475.83,42.57c43-7.64,84.23-20.12,127.61-26.46,59-8.63,112.48,12.24,165.56,35.4C827.93,77.22,886,95.24,951.2,90c86.53-7,172.46-45.71,248.8-84.81V0Z" class="shape-fill"></path>
         </svg>
         </div>
-        <div className="box flex items-center justify-center h-full text-white	">
-            <div className="card w-1/3 h-[500px] bg-indigo-300 flex flex-col space-y-4 p-5"> 
+        <div className=" flex items-center justify-center h-full text-white	">
+            <div className="card w-2/4 h-4/5 bg-indigo-300 flex flex-col space-y-4 p-5"> 
                 <p className="font-comfortaa">Create or Join Chatroom</p>
-                <input className="h-12 bg-mainDark" type="text" placeholder="Username" />
-                <input className="h-12 bg-mainDark" type="text" placeholder="Room Key" />
-                <div class="login-box">
-                    <a href="#">
+                <input value={username} onChange={e => setUsername(e.target.value)} className="h-12 bg-mainDark" type="text" placeholder="Username" />
+                <input value={roomkey} onChange={e => setRoomkey(e.target.value)} className="h-12 bg-mainDark" type="text" placeholder="Room Key" />
+                <div class="login-box" >
+                    <a href="#" onClick={sendRoom} className= "mt-40" >
                         <span></span>
                         <span></span>
                         <span></span>
