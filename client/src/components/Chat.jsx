@@ -47,7 +47,7 @@ const Chat = ({ socket, username, roomkey }) => {
         </div>
         <div className="box flex items-center justify-center h-full text-white	">
             <div className="card w-2/4 h-4/5 bg-indigo-300  relative space-y-4 p-5"> 
-                    <div className="w-full h-[87%] overflow-y-auto" ref={messageListRef}>
+                    <div className="w-full h-[87%] overflow-y-auto scrollbar-hidden" ref={messageListRef}>
                         <p>Room: {roomkey}, you are @{username}</p><br />
                         {/*This is derived message example */}
                         <div className="flex justify-start">

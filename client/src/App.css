@@ -209,6 +209,13 @@ purple: #a5b5fb
 .w-content{
     width: max-content;
 }
+
+.scrollbar-hidden::-webkit-scrollbar {
+  display: none;
+}
+
+
+
 /*RESPONSIVE MOBILE*/
 @media only screen and (max-width: 900px) {
   .card {
