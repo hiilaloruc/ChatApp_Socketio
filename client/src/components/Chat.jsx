@@ -1,6 +1,39 @@
-import React from "react";
+import React, { useRef,useEffect, useState } from "react";
 
-const Chat = () => {
+const Chat = ({ socket, username, roomkey }) => {
+    const messageListRef = useRef(null);
+    const [message, setMessage] = useState("");
+    const [messageList, setMessageList] = useState([]);
+
+    const scrollToBottom = () => {
+        messageListRef.current.addEventListener('DOMNodeInserted', event => {
+            const { currentTarget: target } = event;
+            target.scroll({ top: target.scrollHeight, behavior: 'smooth' });
+        });
+    }
+    
+    useEffect(() => {
+        socket.on("newMessage", (messageData) => {
+            console.log("newMessage arrived:  :)))) >> " + messageData)
+            setMessageList((prev) => [...prev, messageData]) //Insert recent arrivals to existing MessageList when newMessage is triggered.
+            scrollToBottom();
+        })
+    }, [socket])
+
+    const sendMessage = async () => {
+        const messageData = {
+            username: username,
+            message: message,
+            roomkey: roomkey,
+            date: new Date(Date.now()).getHours() + " : " + new Date(Date.now()).getMinutes()
+        }
+        await socket.emit("message", messageData)
+        setMessageList((prev)=> [...prev, messageData]) //Insert recent arrivals to existing MessageList when you send message.
+        setMessage("")
+        scrollToBottom();
+    }
+    //console.log("messageList for ",username," : ", messageList);
+    
     return (
     
         <React.Fragment>
@@ -14,7 +47,8 @@ const Chat = () => {
         </div>
         <div className="box flex items-center justify-center h-full text-white	">
             <div className="card w-2/4 h-4/5 bg-indigo-300  relative space-y-4 p-5"> 
-                <div className="w-full h-[87%] overflow-y-auto">
+                    <div className="w-full h-[87%] overflow-y-auto" ref={messageListRef}>
+                        <p>Room: {roomkey}, you are @{username}</p><br />
                         {/*This is derived message example */}
                         <div className="flex justify-start">
                             <div className=" bg-[#3e4760] text-left px-3 py-2 rounded-[20px] rounded-tl-none text-sm overflow-y-auto mb-2">
@@ -32,7 +66,18 @@ const Chat = () => {
                             <p className="">Lorem ipsum.</p>
                             </div>
                         </div>
-                        
+                        {
+                            messageList && messageList.map((msg, i) => (
+                                <div className={`${msg.username === username ? 'flex justify-end':'flex justify-start'}`}>
+                                <div className={`${msg.username === username ? 'bg-[#ff7860] text-left px-3 py-2 rounded-[20px] rounded-br-none text-sm overflow-y-auto mb-2':'bg-[#3e4760] text-left px-3 py-2 rounded-[20px] rounded-tl-none text-sm overflow-y-auto mb-2'}`}>
+                                <span className="text-[12px] opacity-50 mr-3">@{msg.username}</span>
+                                <span className="text-[12px] float-right opacity-50">{msg.date}</span>
+                                <p className="">{msg.message}</p>
+                                </div>
+                            </div>
+
+                            ))
+                        }
 
 
 
@@ -41,8 +86,8 @@ const Chat = () => {
                 </div>
                     
                 <div className="padding-30 absolute bottom-0 left-0 right-0 flex justify-between">
-                    <input  className="h-12 bg-mainDark w-4/5" type="text" placeholder="Your message here.." />
-                    <button className="bg-[#a5b5fb] text-white rounded-md w-20 hover:bg-[#ff927f]">SEND</button>    
+                    <input value={message} onChange={e => setMessage(e.target.value)}  className="h-12 bg-mainDark w-4/5" type="text" placeholder="Your message here.." />
+                    <button onClick={sendMessage} className="bg-[#a5b5fb] text-white rounded-md w-20 hover:bg-[#ff927f]">SEND</button>    
                </div>
                 
             </div>

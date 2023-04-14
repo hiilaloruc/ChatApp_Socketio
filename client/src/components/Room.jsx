@@ -1,12 +1,18 @@
-import React from "react";
+import React, { useState } from "react";
 
     
-const Room = ({ username, setUsername, roomkey, setRoomkey,setOnChatScreen,socket }) => {
+const Room = ({ username, setUsername, roomkey, setRoomkey, setOnChatScreen, socket }) => {
+    const [warning, setWarning] = useState('');
     const sendRoom = (event) => {
         //event.preventDefault();
         //console.log("Room create clicked!");
-        socket.emit("roomkey", roomkey)
-        setOnChatScreen(true)
+        if (username && roomkey) {
+            socket.emit("roomkey", roomkey)
+            setOnChatScreen(true)
+        } else {
+            setWarning('Username or Room Key cannot be empty!')
+        }
+       
     }
     return (
     <React.Fragment>
@@ -22,7 +28,7 @@ const Room = ({ username, setUsername, roomkey, setRoomkey,setOnChatScreen,socke
             <div className="card w-2/4 h-4/5 bg-indigo-300 flex flex-col space-y-4 p-5"> 
                 <p className="font-comfortaa">Create or Join Chatroom</p>
                 <input value={username} onChange={e => setUsername(e.target.value)} className="h-12 bg-mainDark" type="text" placeholder="Username" />
-                <input value={roomkey} onChange={e => setRoomkey(e.target.value)} className="h-12 bg-mainDark" type="text" placeholder="Room Key" />
+                <input value={roomkey} onChange={ev => setRoomkey(ev.target.value)} className="h-12 bg-mainDark" type="text" placeholder="Room Key" />
                 <div class="login-box" >
                     <a href="#" onClick={sendRoom} className= "mt-40" >
                         <span></span>
@@ -31,9 +37,11 @@ const Room = ({ username, setUsername, roomkey, setRoomkey,setOnChatScreen,socke
                         <span></span>
                         CHAT
                     </a>
-                </div>
+                    </div>
+                    <span className="text-[11px] opacity-50 italic">* Please be aware that your messages will not be saved once you close the page.</span>    
+                    <span className="text-red-400">{warning}</span>
             </div>
-            </div>
+        </div>
 
 
         

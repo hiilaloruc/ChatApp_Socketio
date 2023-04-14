@@ -18,14 +18,12 @@ const io = new Server(server, {
 io.on("connection", (socket) => {
   console.log(socket.id);
   // welcome incoming with emit method from frontend here:
-  socket.on("room", (data) => {
+  socket.on("roomkey", (data) => {
     socket.join(data);
   });
 
   socket.on("message", (messageData) => {
-    console.log("messageData.roomkey : ", messageData.roomkey);
     socket.to(messageData.roomkey).emit("newMessage", messageData);
-    console.log("newMessageeeeee : ", messageData);
   });
 });
 
